@@ -1,30 +1,9 @@
-import React from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { makeStyles } from '@material-ui/core/styles';
+import React from 'react'
 
 import MenuItem from './MenuItem.js'
 import getBridgeData from '../bridges.js'
 import BridgeSearch from './BridgeSearch.js'
-
-const useStyles = makeStyles(theme => ({
-    bridgeLoader: {
-        margin: theme.spacing(2),
-        'position': 'relative',
-        'margin-top': '50%'
-    },
-    bridgeMenu: {
-        'text-align': 'center',
-    }
-}));
-
-function Loader() {
-    const classes = useStyles();
-    return (
-    <div className={classes.bridgeMenu}>
-        <CircularProgress className={classes.bridgeLoader} />
-    </div>
-    );
-}
+import Loader from './Loader'
 
 export default class extends React.Component {
     constructor(props) {
@@ -67,6 +46,7 @@ export default class extends React.Component {
             return (
                 <div>
                     <p>Error: unable to load bridge data</p>
+                    TODO: Error.js
                 </div>
             );
         }
@@ -85,7 +65,7 @@ export default class extends React.Component {
                     bridge={bridge}
                     onClick={() => this.props.onChange(bridge)}
                 />
-                    ) : <div>test</div>
+                    ) : <div>TODO: Nothing Selected!</div>
                 }
             </React.Fragment>
         )

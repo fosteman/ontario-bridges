@@ -8,21 +8,10 @@ export default function BridgeSearch(props) {
     const useStyles = makeStyles(theme => ({
         search: {
             position: 'relative',
-            borderRadius: theme.shape.borderRadius,
-            backgroundColor: fade(theme.palette.common.white, 0.15),
-            '&:hover': {
-                backgroundColor: fade(theme.palette.common.white, 0.25),
-            },
-            marginRight: theme.spacing(2),
-            marginLeft: 0,
             width: '100%',
-            [theme.breakpoints.up('sm')]: {
-                marginLeft: theme.spacing(3),
-                width: 'auto',
-            },
         },
         searchIcon: {
-            width: theme.spacing(7),
+            width: theme.spacing(4),
             height: '100%',
             position: 'absolute',
             pointerEvents: 'none',
@@ -34,16 +23,11 @@ export default function BridgeSearch(props) {
             color: 'inherit',
         },
         inputInput: {
-            padding: theme.spacing(1, 1, 1, 7),
-            transition: theme.transitions.create('width'),
+            padding: theme.spacing(1, 1, 1, 4),
             width: '100%',
-            [theme.breakpoints.up('md')]: {
-                width: 200,
-            },
         }
     }));
     const classes = useStyles();
-    const [search, setSearch] = useState('');
     return (
         <div className={classes.search}>
             <div className={classes.searchIcon}>
