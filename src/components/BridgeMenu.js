@@ -1,8 +1,30 @@
 import React from 'react';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { makeStyles } from '@material-ui/core/styles';
 
 import MenuItem from './MenuItem.js'
 import getBridgeData from '../bridges.js'
 import BridgeSearch from './BridgeSearch.js'
+
+const useStyles = makeStyles(theme => ({
+    bridgeLoader: {
+        margin: theme.spacing(2),
+        'position': 'relative',
+        'margin-top': '50%'
+    },
+    bridgeMenu: {
+        'text-align': 'center',
+    }
+}));
+
+function Loader() {
+    const classes = useStyles();
+    return (
+    <div className={classes.bridgeMenu}>
+        <CircularProgress className={classes.bridgeLoader} />
+    </div>
+    );
+}
 
 export default class extends React.Component {
     constructor(props) {
@@ -27,26 +49,21 @@ export default class extends React.Component {
                 this.setState({ errored: true });
             });
     }
-    componentWillUpdate(nextProps, nextState, nextContext) {
-        if (this.state.filteredBridges !== nextState.filteredBridges) {
-            this.setState({
-                bridges: nextState.filteredBridges
-            });
-        }
-    }
 
     handleBridgeSearch (searchEvent) {
         let search = searchEvent.target.value;
-        if (search === '') this.setState({filteredBridges: this.state.bridges});
-        const filteredBridges =
+
+        if (!search) return this.setState({filteredBridges: this.state.bridges});
+
+        let filteredBridges =
             this.state.bridges.filter(bridge =>
                 bridge.name.toLowerCase()
                     .includes(search.toLowerCase()));
-        this.setState({filteredBridges});
+        return this.setState({filteredBridges});
     }
     render() {
         // Are we in an error state? If so show an error message.
-        if(this.state.errored) {
+        if (this.state.errored) {
             return (
                 <div>
                     <p>Error: unable to load bridge data</p>
@@ -55,25 +72,21 @@ export default class extends React.Component {
         }
 
         // If we aren't in error state, are we in a loading state?
-        if(this.state.loading) {
-            return (
-                <div>
-                    <p>Loading...</p>
-                </div>
-            );
-        }
+        if (this.state.loading) return <Loader />;
 
         // Show our bridges in a menu, with 1 MenuItem per bridge
         return (
             <React.Fragment>
                 <BridgeSearch selectBridge={this.handleBridgeSearch}/>
-                {this.state.filteredBridges.map(bridge =>
+                {
+                    this.state.filteredBridges.length ? this.state.filteredBridges.map(bridge =>
                 <MenuItem
                     key={bridge.id}
                     bridge={bridge}
-                    onClick={e => this.props.onChange(bridge)}
+                    onClick={() => this.props.onChange(bridge)}
                 />
-                )}
+                    ) : <div>test</div>
+                }
             </React.Fragment>
         )
     };

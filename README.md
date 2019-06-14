@@ -1084,3 +1084,10 @@ equivalents in Vue during this walkthrough, including:
 Seeing how this same application can be built in two popular frontend frameworks,
 and also how many similar ideas they share, should help reinforce many of the
 important aspects of modern frontend web development.
+
+## Search Bar
+
+To further your tacit sense of how data flows in React, here's a feature we could minutely implement: a search input to filter our bridges.
++[Screencast of SearchBar in Action](screenshots/search-bar.gif)
+
+
