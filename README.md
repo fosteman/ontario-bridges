@@ -20,7 +20,6 @@ import { fade, makeStyles } from '@material-ui/core/styles';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 
-
 export default function BridgeSearch(props) {
     const useStyles = makeStyles(theme => ({
         search: {
@@ -45,7 +44,6 @@ export default function BridgeSearch(props) {
         }
     }));
     const classes = useStyles();
-    const [search, setSearch] = useState('');
 
     return (
         <div className={classes.search}>
@@ -59,7 +57,6 @@ export default function BridgeSearch(props) {
                     root: classes.inputRoot,
                     input: classes.inputInput,
                 }}
-                inputProps={{ 'aria-label': 'Search' }}
             />
         </div>
     );
@@ -71,35 +68,15 @@ Noteworthy, Material-UI components like `SearchIcon` and `InputBase` work withou
 
 This is stateless functional component that passes `onChange` event information up his parent as an arguement via `props.selectBridge` function, i.e. each time we type in search bar, this function is invoked with `event` argument.
 
-Let's now modify `BridgeMenu` to handle this invocation, so that updated bridge listing is rendered.
-```jsx harmony
-import React from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { makeStyles } from '@material-ui/core/styles';
+I also feature `Loader` component that will
 
+Let's now modify `BridgeMenu` to handle this invocation, so that updated bridge listing is rendered. Loader component will light the stage whenever `state.loading` is true.
+```jsx harmony
+import React from 'react'
 import MenuItem from './MenuItem.js'
 import getBridgeData from '../bridges.js'
 import BridgeSearch from './BridgeSearch.js'
-
-const useStyles = makeStyles(theme => ({
-    bridgeLoader: {
-        margin: theme.spacing(2),
-        'position': 'relative',
-        'margin-top': '50%'
-    },
-    bridgeMenu: {
-        'text-align': 'center',
-    }
-}));
-
-function Loader() {
-    const classes = useStyles();
-    return (
-    <div className={classes.bridgeMenu}>
-        <CircularProgress className={classes.bridgeLoader} />
-    </div>
-    );
-}
+import Loader from './Loader'
 
 export default class extends React.Component {
     constructor(props) {
@@ -136,6 +113,7 @@ export default class extends React.Component {
                     .includes(search.toLowerCase()));
         return this.setState({filteredBridges});
     }
+
     render() {
         // Are we in an error state? If so show an error message.
         if (this.state.errored) {
@@ -152,21 +130,25 @@ export default class extends React.Component {
         // Show our bridges in a menu, with 1 MenuItem per bridge
         return (
             <React.Fragment>
-                <BridgeSearch selectBridge={this.handleBridgeSearch} />
+                <BridgeSearch selectBridge={this.handleBridgeSearch}
+                />
+
                 {
-                    this.state.filteredBridges.length ? this.state.filteredBridges.map(bridge =>
+                    this.state.filteredBridges.length ?
+                        this.state.filteredBridges
+                            .map(bridge =>
                 <MenuItem
                     key={bridge.id}
                     bridge={bridge}
-                    onClick={() => this.props.onChange(bridge)}
+                    onClickabstract={() => this.props.onChange(bridge)}
                 />
-                    ) : <div>test</div>
+                    )
+                        : <div>TODO: Nothing Selected!</div>
                 }
             </React.Fragment>
         )
     };
 }
-
-
 ```
+
 

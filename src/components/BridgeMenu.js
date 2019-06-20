@@ -1,9 +1,9 @@
 import React from 'react'
-
 import MenuItem from './MenuItem.js'
 import getBridgeData from '../bridges.js'
 import BridgeSearch from './BridgeSearch.js'
 import Loader from './Loader'
+import Error from './Error'
 
 export default class extends React.Component {
     constructor(props) {
@@ -16,16 +16,17 @@ export default class extends React.Component {
         };
         this.handleBridgeSearch = this.handleBridgeSearch.bind(this);
     }
+
     componentDidMount() {
         // We're about to start loading our data, set this in our state.
         this.setState({ loading: true });
 
         // Use our bridge.js function to talk to the REST API.
         getBridgeData()
-            .then(bridges => this.setState({ loading: false, bridges, filteredBridges: bridges }))
+            .then(bridges => this.setState({ loading: false, bridges, filteredBridges: bridges, error: '' }))
             .catch(err => {
                 console.error('Unable to load bridge data', err.message);
-                this.setState({ errored: true });
+                this.setState({ errored: true, message: err.message });
             });
     }
 
@@ -40,6 +41,7 @@ export default class extends React.Component {
                     .includes(search.toLowerCase()));
         return this.setState({filteredBridges});
     }
+
     render() {
         // Are we in an error state? If so show an error message.
         if (this.state.errored) {
@@ -57,15 +59,20 @@ export default class extends React.Component {
         // Show our bridges in a menu, with 1 MenuItem per bridge
         return (
             <React.Fragment>
-                <BridgeSearch selectBridge={this.handleBridgeSearch}/>
+                <BridgeSearch selectBridge={this.handleBridgeSearch}
+                />
+
                 {
-                    this.state.filteredBridges.length ? this.state.filteredBridges.map(bridge =>
+                    this.state.filteredBridges.length ?
+                        this.state.filteredBridges
+                            .map(bridge =>
                 <MenuItem
                     key={bridge.id}
                     bridge={bridge}
-                    onClick={() => this.props.onChange(bridge)}
+                    onClickabstract={() => this.props.onChange(bridge)}
                 />
-                    ) : <div>TODO: Nothing Selected!</div>
+                    )
+                        : <div>TODO: Nothing Selected!</div>
                 }
             </React.Fragment>
         )

@@ -21,7 +21,9 @@ class App extends React.Component {
         return (
             <div id="app">
                 <nav id="menu">
-                    <BridgeMenu onChange={this.handleBridgeChange.bind(this)} />
+                    <BridgeMenu
+                        onChange={this.handleBridgeChange.bind(this)}
+                    />
                 </nav>
 
                 <div id="bridge-info">
