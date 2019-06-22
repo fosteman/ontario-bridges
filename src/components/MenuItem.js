@@ -6,7 +6,7 @@ export default function(props) {
         <div
             className="menu-item"
             title={props.bridge.name}
-            onClick={props.onClickabstract}
+            onClick={props.onClick}
         >
             {props.bridge.nameEncoded}
         </div>

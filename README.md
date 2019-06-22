@@ -6,17 +6,13 @@ For instruction of hwo to build this application please refer to [original sourc
 To further your tacit knowledge React data flow, here's a feature we could minutely implement: a search input to filter our bridges.
 +[Screencast of SearchBar in Action](screenshots/search-bar.gif)
 
-We'll create new module `src/components/BridgeSearch.js` to hold components and logic for the SearchBar. 
+We'll create new module `src/components/BridgeSearch.js` to hold the component, and add filtering logic to it's immediate parent `src/components/BridgeMenu`. 
 
-_Note_: manipulation of filtered bridges and re-rendering BridgeMenu will happen on behalf of `BridgeMenu` primarily because of Semantic disposition 
-> It is obvious that BridgeMenu controls it's children, thus it will define filtering logic
-```bash
-touch src/components/BridgeSearch.js
-```
+> Manipulation of filtered bridges and re-rendering bridge listing will happen on behalf of `BridgeMenu` primarily because of it's disposition
 ### `src/components/BridgeSearch.js`
 ```jsx harmony
-import React, {useState} from 'react';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 
@@ -62,14 +58,16 @@ export default function BridgeSearch(props) {
     );
 }
 ```
-Noteworthy, Material-UI components like `SearchIcon` and `InputBase` work without any additional setup - global scope is not polluted with namespaces, and components are isolated. Injection of styles happens on React module level.
+Noteworthy, Material-UI components like `SearchIcon` and `InputBase` work without any additional setup, i.e. global scope is not polluted with namespaces, and components are isolated. Injection of styles happens on React module level.
 
-`makeStyles` is a hook provided by `@material-ui/core/`, being supplied with default _Material_ theme, enables us to inject CSS styles into isolated components via `className` attribute. It's concise to store all required style rules in the the same module.
+`makeStyles` is a hook provided by `@material-ui/core/`, being supplied with default _Material_ theme, enables us to inject CSS styles into isolated components via `className` attribute. It's succinct to store all required style rules in the the same module.
 
-This is stateless functional component that passes `onChange` event information up his parent as an arguement via `props.selectBridge` function, i.e. each time we type in search bar, this function is invoked with `event` argument.
+Newly created `BridgeSearch` is a stateless functional component that passes `onChange` event object up his parent as an argument to `props.selectBridge` function, i.e. each time we type in search bar, this function is invoked with `event` argument.
 
-I also feature `Loader` component that will
+I also feature `Loader` that will fill up time required for our API in `bridges.js` to be fetched. `Loader` component is conventionally separated into it's own module `src/components/Loader.js`
+> DRY or "Don't repeat yourself", is a common practice readily applied to react world, where components are [composable](https://reactjs.org/docs/composition-vs-inheritance.html) and reusable.
 
+### `src/components/BridgeMenu.js`
 Let's now modify `BridgeMenu` to handle this invocation, so that updated bridge listing is rendered. Loader component will light the stage whenever `state.loading` is true.
 ```jsx harmony
 import React from 'react'
@@ -89,66 +87,85 @@ export default class extends React.Component {
         };
         this.handleBridgeSearch = this.handleBridgeSearch.bind(this);
     }
+
     componentDidMount() {
         // We're about to start loading our data, set this in our state.
         this.setState({ loading: true });
 
         // Use our bridge.js function to talk to the REST API.
         getBridgeData()
-            .then(bridges => this.setState({ loading: false, bridges, filteredBridges: bridges }))
+            .then(bridges => this.setState({ loading: false, bridges, filteredBridges: bridges, error: '' }))
             .catch(err => {
                 console.error('Unable to load bridge data', err.message);
-                this.setState({ errored: true });
+                this.setState({ errored: true, message: err.message });
             });
     }
 
     handleBridgeSearch (searchEvent) {
-        let search = searchEvent.target.value;
+        // If nothing is entered return complete list
+        if (!searchEvent.target.value) return this.setState({filteredBridges: this.state.bridges});
 
-        if (!search) return this.setState({filteredBridges: this.state.bridges});
+        // Otherwise, grab search value in upperCase...
+        let search = searchEvent.target.value.toUpperCase();
 
-        let filteredBridges =
-            this.state.bridges.filter(bridge =>
-                bridge.name.toLowerCase()
-                    .includes(search.toLowerCase()));
-        return this.setState({filteredBridges});
+        // ...and filter bridges out by updating state with the return value of .include method, regex alternative of which: new RegExp(/+search+/)
+        return this.setState({
+            filteredBridges: this.state.bridges
+                .filter(bridge => bridge.name.includes(search))
+        });
     }
 
     render() {
         // Are we in an error state? If so show an error message.
-        if (this.state.errored) {
-            return (
-                <div>
-                    <p>Error: unable to load bridge data</p>
-                </div>
-            );
-        }
+        if (this.state.errored) return <Error message='Unable to load bridge data' />;
 
         // If we aren't in error state, are we in a loading state?
         if (this.state.loading) return <Loader />;
 
-        // Show our bridges in a menu, with 1 MenuItem per bridge
+        // Show our search bar, bridge listing, with 1 MenuItem per bridge
         return (
             <React.Fragment>
-                <BridgeSearch selectBridge={this.handleBridgeSearch}
-                />
-
+                <BridgeSearch selectBridge={this.handleBridgeSearch} />
                 {
                     this.state.filteredBridges.length ?
-                        this.state.filteredBridges
-                            .map(bridge =>
-                <MenuItem
-                    key={bridge.id}
-                    bridge={bridge}
-                    onClickabstract={() => this.props.onChange(bridge)}
-                />
-                    )
-                        : <div>TODO: Nothing Selected!</div>
+                        this.state.filteredBridges.map(bridge =>
+                            <MenuItem
+                                key={bridge.id}
+                                bridge={bridge}
+                                onClick={() => this.props.onChange(bridge)}
+                            />
+                            ) : 'Not found!'
                 }
             </React.Fragment>
         )
     };
 }
 ```
+### `src/components/Loader.js`
+[Material-UI Circular Progress](https://material-ui.com/components/progress/) is a component provided by the library. 
+> These styling classes may be received as props coming from parent. In our case, bridge-vue-react application was not designed to work with Material-UI, and that's okay, for React enables us to create isolated standalone components ready for re-use.
+```jsx harmony
+import {makeStyles} from '@material-ui/core'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import React from 'react'
 
+const useStyles = makeStyles(theme => ({
+    bridgeLoader: {
+        'position': 'relative',
+        'margin-top': '50%'
+    },
+    bridgeMenu: {
+        'text-align': 'center',
+    }
+}));
+
+export default function() {
+    const classes = useStyles();
+    return (
+        <div className={classes.bridgeMenu}>
+            <CircularProgress className={classes.bridgeLoader} />
+        </div>
+    );
+}
+```
 
