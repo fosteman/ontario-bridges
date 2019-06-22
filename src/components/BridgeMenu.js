@@ -45,7 +45,7 @@ export default class extends React.Component {
 
     render() {
         // Are we in an error state? If so show an error message.
-        if (this.state.errored) return <Error message='Unable to load bridge data' />;
+        if (this.state.errored) return 'Unable to load bridge data';
 
         // If we aren't in error state, are we in a loading state?
         if (this.state.loading) return <Loader />;
