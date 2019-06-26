@@ -3,10 +3,12 @@
 For instruction of hwo to build this application please refer to [original source](https://github.com/humphd/web422/tree/master/Code%20Examples/week5/bridge-react)
 ## Search Bar
 
-To further your tacit knowledge React data flow, here's a feature we could minutely implement: a search input to filter our bridges.
+To further your knowledge of React data flow (Flux Design), here's a functional feature we could minutely implement: **a search input to filter our bridges**.
 +[Screencast of SearchBar in Action](screenshots/search-bar.gif)
 
-We'll create new module `src/components/BridgeSearch.js` to hold the component, and add filtering logic to it's immediate parent `src/components/BridgeMenu`. 
+Material-UI styling is utilized. It's main feature is keeping global scope clean and tidy - away from namespaces, whence components are isolated. Injection of styles happens on React module level.
+
+We'll create new module `src/components/BridgeSearch` to hold the component, and add filtering logic to it's immediate parent `src/components/BridgeMenu`
 
 > Manipulation of filtered bridges and re-rendering bridge listing will happen on behalf of `BridgeMenu` primarily because of it's disposition
 ### `src/components/BridgeSearch.js`
@@ -58,17 +60,20 @@ export default function BridgeSearch(props) {
     );
 }
 ```
-Noteworthy, Material-UI components like `SearchIcon` and `InputBase` work without any additional setup, i.e. global scope is not polluted with namespaces, and components are isolated. Injection of styles happens on React module level.
-
-`makeStyles` is a hook provided by `@material-ui/core/`, being supplied with default _Material_ theme, enables us to inject CSS styles into isolated components via `className` attribute. It's succinct to store all required style rules in the the same module.
 
 Newly created `BridgeSearch` is a stateless functional component that passes `onChange` event object up his parent as an argument to `props.selectBridge` function, i.e. each time we type in search bar, this function is invoked with `event` argument.
 
-I also feature `Loader` that will fill up time required for our API in `bridges.js` to be fetched. `Loader` component is conventionally separated into it's own module `src/components/Loader.js`
-> DRY or "Don't repeat yourself", is a common practice readily applied to react world, where components are [composable](https://reactjs.org/docs/composition-vs-inheritance.html) and reusable.
+Noteworthy, Material-UI components like `SearchIcon` and `InputBase` work without any additional setup. `makeStyles` is a hook provided by `@material-ui/core/`, being supplied with default _Material_ theme, enables us to inject CSS styles into isolated components via `className` attribute. It's succinct to store all required style rules in the the same module.
+
+> Marc Gurwitz @SenecaCollege once contemplated: _It's probable that nowadays we spend more time staring at display spinners than it takes for a linux kernel to startup on a 20 years old machine_.
+
+Hence, [I](https://github.com/fosteman/) also decided to feature a nice `Loader` that will fill up time required for our API in `bridges.js` to be fetched. `Loader` component is conventionally separated into it's own module `src/components/Loader.js`
+> DRY or "Don't repeat yourself", is a common programming practice readily associated with [react world](https://reactjs.org/docs/thinking-in-react.html) where components are [composable](https://reactjs.org/docs/composition-vs-inheritance.html) and reusable. 
+
+>`Loader` can be afterwards reused many times throughout the application
 
 ### `src/components/BridgeMenu.js`
-Let's now modify `BridgeMenu` to handle this invocation, so that updated bridge listing is rendered. Loader component will light the stage whenever `state.loading` is true.
+Let's now modify `BridgeMenu` to handle event passed in `selectBridge`, so that fresh bridge listing is rendered. `Loader` component will take the stage whenever `state.loading` is true.
 ```jsx harmony
 import React from 'react'
 import MenuItem from './MenuItem.js'
@@ -143,11 +148,11 @@ export default class extends React.Component {
 ```
 ### `src/components/Loader.js`
 [Material-UI Circular Progress](https://material-ui.com/components/progress/) is a component provided by the library. 
-> These styling classes may be received as props coming from parent. In our case, bridge-vue-react application was not designed to work with Material-UI, and that's okay, for React enables us to create isolated standalone components ready for re-use.
+> These styling classes may be received as props coming from parent. In our case, bridge-vue-react application was not designed to work with Material-UI, and that's okay, for React enables us to create isolated standalone components ready for re-use anywhere.
 ```jsx harmony
+import React from 'react'
 import {makeStyles} from '@material-ui/core'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import React from 'react'
 
 const useStyles = makeStyles(theme => ({
     bridgeLoader: {
@@ -169,3 +174,4 @@ export default function() {
 }
 ```
 
+##### With these changes made to layout, `bridge-vue-react` now features a pretty looking `SearchBar`!
