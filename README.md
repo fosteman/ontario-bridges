@@ -1,6 +1,6 @@
 # "Bridge Vue" in React
 
-For instruction of hwo to build this application please refer to [original source](https://github.com/humphd/web422/tree/master/Code%20Examples/week5/bridge-react)
+For instruction of how to build this application please refer to [original source](https://github.com/humphd/web422/tree/master/Code%20Examples/week5/bridge-react)
 ## Search Bar
 
 To further your knowledge of React data flow (Flux Design), here's a functional feature we could minutely implement: **a search input to filter our bridges**.
