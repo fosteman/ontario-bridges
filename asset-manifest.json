@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/ontario-bridges/static/css/main.e7f80c5f.chunk.css",
+    "main.js": "/ontario-bridges/static/js/main.b41353c4.chunk.js",
+    "main.js.map": "/ontario-bridges/static/js/main.b41353c4.chunk.js.map",
+    "runtime~main.js": "/ontario-bridges/static/js/runtime~main.683ecc0f.js",
+    "runtime~main.js.map": "/ontario-bridges/static/js/runtime~main.683ecc0f.js.map",
+    "static/css/2.36f280e5.chunk.css": "/ontario-bridges/static/css/2.36f280e5.chunk.css",
+    "static/js/2.eb63d6cc.chunk.js": "/ontario-bridges/static/js/2.eb63d6cc.chunk.js",
+    "static/js/2.eb63d6cc.chunk.js.map": "/ontario-bridges/static/js/2.eb63d6cc.chunk.js.map",
+    "index.html": "/ontario-bridges/index.html",
+    "precache-manifest.3d4422d71c2c4db36952649f4a266271.js": "/ontario-bridges/precache-manifest.3d4422d71c2c4db36952649f4a266271.js",
+    "service-worker.js": "/ontario-bridges/service-worker.js",
+    "static/css/2.36f280e5.chunk.css.map": "/ontario-bridges/static/css/2.36f280e5.chunk.css.map",
+    "static/css/main.e7f80c5f.chunk.css.map": "/ontario-bridges/static/css/main.e7f80c5f.chunk.css.map"
+  }
+}
