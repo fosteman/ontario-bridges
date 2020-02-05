@@ -1,5 +1,5 @@
 # "Bridge Vue" in React
-
+![demo](./demo.gif)
 For instruction of how to build this application please refer to [original source](https://github.com/humphd/web422/tree/master/Code%20Examples/week5/bridge-react)
 ## Search Bar
 
