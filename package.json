@@ -3,22 +3,26 @@
   "version": "0.2.1",
   "private": true,
   "author": "Timofei Shchepkin",
-  "homepage": "https://ontario-bridges.herokuapp.com/",
+  "homepage": "http://fostman.github.io/ontario-bridges",
+  "repository": "https://github.com/fosteman/ontario-bridges.git",
   "dependencies": {
     "@material-ui/core": "^4.1.1",
     "@material-ui/icons": "^4.2.0",
+    "gh-pages": "^2.2.0",
     "he": "^1.2.0",
     "leaflet": "^1.5.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-leaflet": "^2.3.0",
-    "react-scripts": "3.0.1"
+    "react-scripts": "^3.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
